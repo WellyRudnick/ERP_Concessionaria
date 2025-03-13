@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@600" />
+    <script src="{{ url_for('static', filename='javascript/event_handlers.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/manipulator.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/validator.js') }}"></script>
+    <title>Configurações</title>
+
+</head>
+
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='img/logo.png')}}" alt="logo-empresa">
+            </div>
+            <nav class="nav ">
+                <div class="nav-item">
+                    <a href="{{ url_for('index.home')}}">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ url_for('sales.sales')}}">Venda</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#">Cadastro</a>
+                    <div class="submenu">
+                        <a href="{{ url_for('vehicle.vehicle_register') }}">Veículos</a>
+                        <a href="{{ url_for('customer.customer_register') }}">Clientes</a>
+                        <a href="{{ url_for('employee.employee_register') }}">Funcionários</a>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <a href="#">Consulta</a>
+                    <div class="submenu">
+                        <a href="{{ url_for('vehicle.vehicle_search') }}">Veículos</a>
+                        <a href="{{ url_for('customer.customer_search') }}">Clientes</a>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <a href="#">Relatórios</a>
+                    <div class="submenu">
+                        <a href="{{ url_for('reports.reports') }}">Vendas</a>
+                        <a href="{{ url_for('reports.stockreport') }}">Estoque</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="user-container">
+                <a class="user" id="user-icon" href="#">
+                    <p id="username">{{username}}</p>
+                    <i class="material-symbols-outlined user-icon">account_circle</i>
+                </a>
+                <div id="user-submenu" class="user-submenu">
+
+                    <a href="{{ url_for('settings.settings')}}">Configurações</a>
+                    <a href="{{ url_for('auth.logout') }}">Sair</a>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+
+        <div class="main-container">
+            <div class="main-content">
+                <h1>Configurações</h1>
+            </div>
+
+            {% if message %}
+            <p style="color: green; margin-top: -30px;">{{ message }}</p>
+            {% endif %}
+
+            {% if error %}
+            <p style="color: red; margin-top: -30px;">{{ error }}</p>
+            {% endif %}
+
+            <form action="" method="POST" enctype="multipart/form-data">
+                <div class="form-container">
+                    <div>
+                        <div class="form-item">
+                            <label for="photo">Foto</label>
+
+                            {% if img_base64 %}
+                            <img src="{{ img_base64 }}" alt="user-photo" class="image-preview"
+                                style="max-width: 250px; max-height: 250px; width: auto; height: auto; object-fit: contain;">
+                            {% endif %}
+
+                            <label style="display: none;" id="labelFotoNova">Foto Nova</label>
+                            <img id="preview" src="#" alt="Pré-visualização" class="hidden-image-preview">
+
+                            <input type="file" name="profilePhoto" id="profilePhoto" accept="image/*" class="input-file">
+                        </div>
+                        <div class="form-item">
+                            <label for="username">Nome do usuário</label>
+                            <p class="form-item-user" id="username">{{ username }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-item">
+                            <label for="password">Senha atual</label>
+                            <input type="password" name="current_password" id="password">
+                        </div>
+                        <div class="form-item">
+                            <label for="password">Nova senha</label>
+                            <input type="password" name="new_password" id="new-password">
+                        </div>
+                        <div class="form-item">
+
+                        </div>
+                        <div class="form-item">
+                            <label for="password">Confirmar nova senha</label>
+                            <input type="password" name="confirm_password" id="confirm-password">
+                        </div>
+                    </div>
+                    
+                    <div class="form-item form-button-vehicle-register">
+                        <button type="submit">Confirmar</button>
+                    </div>
+                    
+
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-container register-footer">
+            <p>© <span id="Ydate"></span> - GLW Sistemas - Todos os direitos reservados</p>
+        </div>
+    </footer>
+</body>
+
+</html>

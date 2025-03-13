@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@600" />
+    <script src="{{ url_for('static', filename='javascript/event_handlers.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='javascript/manipulator.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='javascript/validator.js') }}" defer></script>
+
+    <title>ERP Concessionaria</title>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='img/logo.png')}}" alt="logo-empresa">
+            </div>
+            <nav class="nav ">
+                <div class="nav-item">
+                    <a href="{{ url_for('index.home')}}">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ url_for('sales.sales')}}">Venda</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#">Cadastro</a>
+                    <div class="submenu">
+                        <a href="{{ url_for('vehicle.vehicle_register') }}">Veículos</a>
+                        <a href="{{ url_for('customer.customer_register') }}">Clientes</a>
+                        <a href="{{ url_for('employee.employee_register') }}">Funcionários</a>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <a href="#">Consulta</a>
+                    <div class="submenu">
+                        <a href="{{ url_for('vehicle.vehicle_search') }}">Veículos</a>
+                        <a href="{{ url_for('customer.customer_search') }}">Clientes</a>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <a href="#">Relatórios</a>
+                    <div class="submenu">
+                        <a href="{{ url_for('reports.reports') }}">Vendas</a>
+                        <a href="{{ url_for('reports.stockreport') }}">Estoque</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="user-container">
+                <a class="user" id="user-icon" href="#">
+                    <p>{{username}}</p>
+                    <i class="material-symbols-outlined user-icon">account_circle</i>
+                </a>
+                <div id="user-submenu" class="user-submenu">
+
+                    <a href="{{ url_for('settings.settings')}}">Configurações</a>
+                    <a href="{{ url_for('auth.logout') }}">Sair</a>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+        <div class="main-container">
+            <h1>Relatório de Estoque</h1>
+
+            {% if message %}
+            <div class="message" style="color: red;">
+                <p>{{message}}</p>
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="message" style="color: red;">
+                <p>{{error}}</p>
+            </div>
+            {% endif %}
+
+            {% if vehicles %}
+            <div class="search-container-table">
+                <table id="vehicleTable">
+                    <thead>
+                        <tr>
+                            <th>Disponibilidade</th>
+                            <th>Categoria</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Placa</th>
+                            <th>Motor</th>
+                            <th>Ano do Veículo</th>
+                            <th>Ano de Fabricação</th>
+                            <th>Cor</th>
+                            <th>Quilometragem</th>
+                            <th>Valor de Venda</th>
+                            <th>Condição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vehicle in vehicles %}
+                        <tr>
+                            <td class="{% if vehicle.disponibilidade in ['Disponível', 'disponível', 'Disponivel', 'disponivel'] %}available{% else %}sold{% endif %}">{{vehicle['disponibilidade']}}</td>
+                            <td>{{vehicle['categoria']}}</td>
+                            <td>{{vehicle['marca']}}</td>
+                            <td>{{vehicle['modelo']}}</td>
+                            <td>{{vehicle['placa']}}</td>
+                            <td>{{vehicle['motor_veiculo']}}</td>
+                            <td>{{vehicle['ano_modelo']}}</td>
+                            <td>{{vehicle['ano_fabricacao']}}</td>
+                            <td>{{vehicle['cor']}}</td>
+                            <td>{{vehicle['km_rodado']}} km</td>
+                            <td>{{vehicle['valor_venda']}}</td>
+                            <td>{{vehicle['condicao']}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+    <footer>
+        <div class="footer-container">
+            <p>© <span id="Ydate"></span> - GLW Sistemas - Todos os direitos reservados</p>
+        </div>
+    </footer>
+</body>
+
+</html>
