@@ -34,7 +34,7 @@ Este é um sistema de gerenciamento ERP para uma Concessionaria de veículos, on
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/ga6rielsilva/Concessionaria.git
+   git clone https://github.com/WellyRudnick/ERP_Concessionaria.git
    cd nome-do-repositorio
    ```
 
