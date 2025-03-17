@@ -40,16 +40,22 @@ document.addEventListener("DOMContentLoaded", function () {
             const multiplier = dir === "asc" ? 1 : -1;
 
             rows.sort((rowA, rowB) => {
-                const x = rowA.getElementsByTagName("TD")[n].textContent || rowA.getElementsByTagName("TD")[n].innerText;
-                const y = rowB.getElementsByTagName("TD")[n].textContent || rowB.getElementsByTagName("TD")[n].innerText;
-
-                const xValue = isNaN(x) ? x : parseFloat(x);
-                const yValue = isNaN(y) ? y : parseFloat(y);
-
+                let x = rowA.getElementsByTagName("TD")[n].textContent.trim();
+                let y = rowB.getElementsByTagName("TD")[n].textContent.trim();
+            
+                // Normaliza os valores para número, removendo " km" e pontos de milhar
+                const normalizeNumber = (str) => {
+                    return parseFloat(str.replace(/\./g, "").replace(" km", ""));
+                };
+            
+                const xValue = isNaN(normalizeNumber(x)) ? x : normalizeNumber(x);
+                const yValue = isNaN(normalizeNumber(y)) ? y : normalizeNumber(y);
+            
                 if (xValue > yValue) return 1 * multiplier;
                 if (xValue < yValue) return -1 * multiplier;
                 return 0;
             });
+            
 
             // Atualiza a tabela com as linhas ordenadas
             const tbody = table.getElementsByTagName("tbody")[0];

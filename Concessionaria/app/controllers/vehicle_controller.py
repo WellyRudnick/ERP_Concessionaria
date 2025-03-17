@@ -1,6 +1,7 @@
 from flask import request, render_template, redirect, url_for
 from app.database.connection import getDatabaseConnection
 from app.models.vehicle import Vehicle
+import re
 
 # Função para registrar um novo veículo
 def vehicle_register():
@@ -24,6 +25,14 @@ def vehicle_register():
         buypriceVehicle = request.form['buyprice_vehicle']
         sellpriceVehicle = request.form['sellprice_vehicle']
         disponibilityVehicle = "Disponível"
+
+        kmsVehicle = re.sub(r"[^\d]", "", kmsVehicle)
+        buypriceVehicle = re.sub(r"[^\d]", "", buypriceVehicle)
+        sellpriceVehicle = re.sub(r"[^\d]", "", sellpriceVehicle)
+
+        kmsVehicle = int(kmsVehicle)
+        buypriceVehicle = int(buypriceVehicle)
+        sellpriceVehicle = int(sellpriceVehicle)
 
         # Inserir os dados coletados no banco de dados
         conn = getDatabaseConnection()

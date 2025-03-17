@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             const price = originalPriceInput.value.replace(/\D/g, "");
-            const interestRate = 0.16;
+            const interestRate = 0.0225;
             const TotalPrice = price * Math.pow(1 + interestRate, parcelas / 12);
             const ParcelasPrice = TotalPrice / parcelas;
 
