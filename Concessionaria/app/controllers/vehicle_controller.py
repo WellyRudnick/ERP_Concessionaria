@@ -152,6 +152,14 @@ def edit_vehicle(plate):
         buypriceVehicle = request.form['buyprice_vehicle']
         sellpriceVehicle = request.form['sellprice_vehicle']
 
+        kmsVehicle = re.sub(r"[^\d]", "", kmsVehicle)
+        buypriceVehicle = re.sub(r"[^\d]", "", buypriceVehicle)
+        sellpriceVehicle = re.sub(r"[^\d]", "", sellpriceVehicle)
+
+        kmsVehicle = int(kmsVehicle)
+        buypriceVehicle = int(buypriceVehicle)
+        sellpriceVehicle = int(sellpriceVehicle)
+
         try:
             # Atualiza os dados do veículo no banco de dados
             Vehicle.update_by_plate(cursor, plate, brandVehicle, modelVehicle, engineVehicle, colorVehicle, yearVehicle, yearModel,

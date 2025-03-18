@@ -43,20 +43,32 @@ document.addEventListener("DOMContentLoaded", function () {
         paymentSelect.addEventListener("change", function () {
             const selectValue = this.value;
             const parcelasInput = document.getElementById("parcelasAmount");
+            const valorTotal = document.getElementById("valorTotal");
+            const vehicleSelector = document.getElementById("vehicle-selector");
+
+            let price = parseFloat(vehicleSelector.options[vehicleSelector.selectedIndex].getAttribute("data-price")) || 0;
 
             if (selectValue === "cartão de crédito") {
                 parcelasInput.disabled = false;
                 parcelasInput.selectedIndex = -1;
+                valorTotal.value = price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
             } else {
                 parcelasInput.disabled = true;
                 parcelasInput.selectedIndex = 0;
                 ParcelasPriceInput.value = "R$ 0,00";
-                valorTotal.value = vehicleSelector.options[vehicleSelector.selectedIndex].getAttribute("data-price").toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+                // Aplicar desconto de 5% para dinheiro ou Pix
+                if (selectValue === "dinheiro" || selectValue === "pix") {
+                    price *= 0.95; // Aplica o desconto de 5%
+                    valorTotal.value = `${price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} (5% de desconto aplicado!)`;
+                } else {
+                    valorTotal.value = price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                }
             }
         });
     }
 
-    // Mostra o valor original do veiculo e já calcula o valor final com as parcelas
+    // Mostra o valor original do veículo e já calcula o valor final com as parcelas
     const vehicleSelector = document.getElementById("vehicle-selector");
     const originalPriceInput = document.getElementById("OriginalPrice");
 
@@ -64,13 +76,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (vehicleSelector && originalPriceInput) {
         vehicleSelector.addEventListener("change", function () {
             const selectedOption = vehicleSelector.options[vehicleSelector.selectedIndex];
-            const price = selectedOption.getAttribute("data-price");
+            let price = parseFloat(selectedOption.getAttribute("data-price")) || 0;
 
             // Formatar e exibir o valor
-            if (price) {
-                originalPriceInput.value = price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            originalPriceInput.value = price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+            // Se o pagamento for dinheiro ou Pix, aplicar desconto automaticamente
+            if (paymentSelect.value === "dinheiro" || paymentSelect.value === "pix") {
+                let discountedPrice = price * 0.95;
+                valorTotal.value = `${discountedPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} (5% de desconto aplicado!)`;
             } else {
-                originalPriceInput.value = "R$ 0,00";
+                valorTotal.value = price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
             }
         });
     }
@@ -79,23 +95,61 @@ document.addEventListener("DOMContentLoaded", function () {
     const parcelasInput = document.getElementById("parcelasAmount");
     const ParcelasPriceInput = document.getElementById("ParcelasPrice");
     const valorTotal = document.getElementById("valorTotal");
+
     if (parcelasInput && ParcelasPriceInput && originalPriceInput && valorTotal) {
         parcelasInput.addEventListener("change", function () {
             const selectedOption = parcelasInput.options[parcelasInput.selectedIndex];
-            const parcelas = selectedOption.value;
+            const parcelas = parseInt(selectedOption.value) || 1;
 
+            let price = parseFloat(originalPriceInput.value.replace(/\D/g, "")) / 100;
+            let interestRate = 0;
 
-            const price = originalPriceInput.value.replace(/\D/g, "");
-            const interestRate = 0.0225;
-            const TotalPrice = price * Math.pow(1 + interestRate, parcelas / 12);
-            const ParcelasPrice = TotalPrice / parcelas;
+            // Definir taxas de juros com base no número de parcelas
+            switch (parcelas) {
+                case 1:
+                    interestRate = 0.01;
+                    break;
+                case 24:
+                    interestRate = 0.015;
+                    break;
+                case 36:
+                    interestRate = 0.0175;
+                    break;
+                case 48:
+                    interestRate = 0.02;
+                    break;
+                case 60:
+                    interestRate = 0.0225;
+                    break;
+                case 72:
+                    interestRate = 0.025;
+                    break;
+                default:
+                    interestRate = 0;
+            }
 
+            let totalPrice, parcelaPrice;
 
-            // Formatar e exibir o valor
-            ParcelasPriceInput.value = ParcelasPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-            valorTotal.value = TotalPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            if (interestRate === 0) {
+                // Pagamento à vista
+                totalPrice = price;
+                parcelaPrice = price;
+            } else {
+                // Cálculo pelo sistema PRICE (tabela price)
+                const i = interestRate;
+                const n = parcelas;
+
+                parcelaPrice = (price * i) / (1 - Math.pow(1 + i, -n)); // Fórmula da Tabela Price
+                totalPrice = parcelaPrice * parcelas;
+            }
+
+            // Formatar e exibir os valores
+            ParcelasPriceInput.value = parcelaPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            valorTotal.value = totalPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
         });
     }
+
+
 
     // Formulario de delete de veículos
     const deleteVehicleForms = document.querySelectorAll("form.delete-form");
@@ -165,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     }
-    
+
     // log para verificar se o script foi carregado
     console.log("Event_handlers.js carregado com sucesso!");
 });

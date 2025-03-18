@@ -33,29 +33,41 @@ document.addEventListener("DOMContentLoaded", function () {
     if (table) {
         const headers = table.getElementsByTagName("th");
         let sortState = Array(headers.length).fill("asc"); // Mantém estado de ordenação para cada coluna
+        const kmElements = document.getElementsByClassName("km");
+        const priceElements = document.getElementsByClassName("price");
+
+        // Formata os preços e quilômetros na tabela
+        Array.from(priceElements).forEach(el => {
+            let value = parseFloat(el.textContent.replace(/\D/g, "")); // Remove caracteres não numéricos e ajusta centavos
+            el.textContent = value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        });
+
+        Array.from(kmElements).forEach(el => {
+            let value = parseInt(el.textContent.replace(/\D/g, ""), 10); // Remove caracteres não numéricos
+            el.textContent = value.toLocaleString("pt-BR") + " km";
+        });
 
         function sortTable(n) {
             const rows = Array.from(table.rows).slice(1); // Pega todas as linhas, exceto o cabeçalho
-            const dir = sortState[n]; // Obtem direção atual da coluna
+            const dir = sortState[n]; // Obtém direção atual da coluna
             const multiplier = dir === "asc" ? 1 : -1;
 
             rows.sort((rowA, rowB) => {
                 let x = rowA.getElementsByTagName("TD")[n].textContent.trim();
                 let y = rowB.getElementsByTagName("TD")[n].textContent.trim();
-            
+
                 // Normaliza os valores para número, removendo " km" e pontos de milhar
                 const normalizeNumber = (str) => {
-                    return parseFloat(str.replace(/\./g, "").replace(" km", ""));
+                    return parseFloat(str.replace(/\./g, "").replace(" km", "").replace("R$", "").replace(",", "."));
                 };
-            
+
                 const xValue = isNaN(normalizeNumber(x)) ? x : normalizeNumber(x);
                 const yValue = isNaN(normalizeNumber(y)) ? y : normalizeNumber(y);
-            
+
                 if (xValue > yValue) return 1 * multiplier;
                 if (xValue < yValue) return -1 * multiplier;
                 return 0;
             });
-            
 
             // Atualiza a tabela com as linhas ordenadas
             const tbody = table.getElementsByTagName("tbody")[0];
@@ -77,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+
 
 
     // log para verificar se o script foi carregado
