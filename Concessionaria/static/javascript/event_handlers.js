@@ -149,7 +149,23 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Código para formatação de preços e quilômetros em pt-BR
+    const kmElements = document.getElementsByClassName("km");
+    const priceElements = document.getElementsByClassName("price");
 
+    for (let kmElement of kmElements) {
+        let kmValue = parseFloat(kmElement.textContent.replace(/\D/g, ""));
+        if (!isNaN(kmValue)) {
+            kmElement.textContent = kmValue.toLocaleString("pt-BR") + " km";
+        }
+    }
+
+    for (let priceElement of priceElements) {
+        let priceValue = parseFloat(priceElement.textContent.replace(/\D/g, ""));
+        if (!isNaN(priceValue)) {
+            priceElement.textContent = priceValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        }
+    }
 
     // Formulario de delete de veículos
     const deleteVehicleForms = document.querySelectorAll("form.delete-form");

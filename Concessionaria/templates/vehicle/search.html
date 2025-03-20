@@ -73,17 +73,28 @@
             <div class="search-container search-item">
                 <form action="{{ url_for('vehicle.vehicle_search') }}" method="POST" id="search-form">
                     <label for="plate_vehicle">Placa</label>
-                    <input type="text" name="plate_vehicle" id="plate_vehicle" placeholder="Digite a Placa do Veículo" required>
+                    <input type="text" name="plate_vehicle" id="plate_vehicle" placeholder="Digite a Placa do Veículo">
+                    <div class="brand-category">
+                        <div class="brand-category-input">
+                            <label for="brand_vehicle">Marca</label>
+                            <input type="text" name="brand_vehicle" id="brand_vehicle" placeholder="Digite o marca do Veículo">
+                        </div>
+                        <div class="brand-category-input">
+                            <label for="category_vehicle">Categoria</label>
+                            <input type="text" name="category_vehicle" id="category_vehicle" placeholder="Digite a categoria do Veículo">
+                        </div>
+                    </div>
                     <button type="submit">Buscar</button>
                     {% if message %}
                     <p style="color: green;"><strong>{{ message }}</strong></p>
                     {% endif %}
                 </form>
 
-                {% if vehicle %}
+                {% if vehicles %}
                 <div id="result-container">
                     <div class="search-edit">
                         <h2>Resultado da Busca</h2>
+                        {% for vehicle in vehicles %}
                         <div class="edit-delete-button">
                             <a href="{{ url_for('vehicle.edit_vehicle', plate=vehicle['placa']) }}" class="material-symbols-outlined edit-button" name="edit-button">edit<a>
                             <form class="delete-form" action="{{ url_for('vehicle.delete_vehicle', plate=vehicle['placa']) }}" method="POST">
@@ -102,10 +113,11 @@
                         <p><strong>Cor:</strong> {{ vehicle['cor'] }}</p>
                         <p><strong>Placa:</strong> {{ vehicle['placa'] }}</p>
                         <p><strong>Chassi:</strong> {{ vehicle['chassi'] }}</p>
-                        <p><strong>Quilometragem:</strong> {{ vehicle['km_rodado'] }} km</p>
-                        <p><strong>Preço:</strong> {{ vehicle['valor_venda'] }}</p>
+                        <p><strong>Quilometragem:</strong> <span class="km">{{ vehicle['km_rodado'] }}</span></p>
+                        <p><strong>Preço:</strong> <span class="price">{{ vehicle['valor_venda'] }}</span></p>
                         <p><strong>Condição:</strong> {{ vehicle['condicao'] }}</p>
                     </div>
+                    {% endfor %}
                 </div>
                 {% endif %}
 

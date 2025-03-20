@@ -65,17 +65,25 @@ def vehicle_search():
     message = request.args.get('message')
 
     if request.method == 'POST':
-        # Captura a placa do veículo do formulário
+        # Captura os dados do veículo do formulário
         plate = request.form['plate_vehicle']
+        brand = request.form['brand_vehicle']
+        category = request.form['category_vehicle']
 
         conn = getDatabaseConnection()
         cursor = conn.cursor(dictionary=True)
 
         try:
-            # Busca o veículo no banco de dados pela placa
-            vehicle_data = Vehicle.find_by_plate(cursor, plate)
-            if vehicle_data is None:
+            if plate:
+                vehicle_data = Vehicle.find_by_plate(cursor, plate)
+            elif brand:
+                vehicle_data = Vehicle.find_by_brand(cursor, brand)
+            elif category:
+                vehicle_data = Vehicle.find_by_category(cursor, category)
+            
+            if not vehicle_data:
                 error = "Veículo não encontrado"
+
         except Exception as e:
             # Em caso de erro, define a mensagem de erro
             error = f"Erro ao buscar veículo: {str(e)}"
@@ -85,7 +93,7 @@ def vehicle_search():
             conn.close()
 
     # Renderiza o template de busca de veículo com os dados do veículo e mensagens de erro ou sucesso
-    return render_template('vehicle/search.html', vehicle=vehicle_data, error=error, message=message, username=request.cookies.get('username'))
+    return render_template('vehicle/search.html', vehicles=vehicle_data, error=error, message=message, username=request.cookies.get('username'))
 
 # Função para deletar um veículo
 def delete_vehicle(plate):

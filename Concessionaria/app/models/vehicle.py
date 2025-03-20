@@ -50,7 +50,22 @@ class Vehicle:
     def find_by_plate(cursor, plate):
         query = "SELECT * FROM tb_veiculos WHERE placa = %s"
         cursor.execute(query, (plate,))
-        return cursor.fetchone()
+        return cursor.fetchall()
+    
+    # Método para encontrar um veículo pela marca
+    @staticmethod
+    def find_by_brand(cursor, brand):
+        query = "SELECT * FROM tb_veiculos WHERE marca = %s"
+        cursor.execute(query, (brand,))
+        return cursor.fetchall()
+    
+    # Método para encontrar um veículo pela categoria
+    @staticmethod
+    def find_by_category(cursor, category):
+        query = "SELECT * FROM tb_veiculos WHERE categoria = %s"
+        cursor.execute(query, (category,))
+        return cursor.fetchall()
+    
 
     # Método para deletar um veículo pelo número da placa
     @staticmethod

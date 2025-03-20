@@ -668,3 +668,15 @@ tr:nth-child(odd) {
 tr:nth-child(even) {
     background-color: #f2f2f2;  /* Cor de fundo para linhas pares */
 }
+
+.brand-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-category-input {
+    width: 48%;
+    margin-right: auto;
+}
