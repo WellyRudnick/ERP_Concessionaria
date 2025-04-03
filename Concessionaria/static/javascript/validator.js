@@ -310,6 +310,36 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    const alertMessage = document.cookie.split('; ').find(row => row.startsWith('alert_message='));
+        
+            if (alertMessage) {
+                const message = decodeURIComponent(alertMessage.split('=')[1]);
+        
+                // Criar o alerta estilizado
+                const alertBox = document.createElement("div");
+                alertBox.textContent = message;
+                alertBox.style.position = "fixed";
+                alertBox.style.bottom = "20px";
+                alertBox.style.right = "20px";
+                alertBox.style.padding = "15px 20px";
+                alertBox.style.background = "#007bff";
+                alertBox.style.color = "white";
+                alertBox.style.borderRadius = "5px";
+                alertBox.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
+                alertBox.style.fontSize = "16px";
+                alertBox.style.zIndex = "1000";
+                document.body.appendChild(alertBox);
+        
+                // Remover cookie para evitar alertas repetidos
+                document.cookie = "alert_message=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+                // Fechar automaticamente em 3s
+                setTimeout(() => {
+                    alertBox.style.opacity = "0";
+                    setTimeout(() => document.body.removeChild(alertBox), 500000);
+                }, 3000);
+            }
+
     // Verificação de carregamento dos script
     console.log("Validator.js carregado com sucesso!");
 });

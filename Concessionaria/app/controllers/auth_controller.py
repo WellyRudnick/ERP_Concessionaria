@@ -1,6 +1,7 @@
 from flask import request, redirect, url_for, make_response, render_template
 from app.database.connection import getDatabaseConnection
 import os
+import urllib.parse
 from PIL import Image
 from io import BytesIO
 
@@ -31,6 +32,12 @@ def is_logged():
 
 # Função para lidar com o login do usuário
 def login():
+
+    if is_logged():
+        response = make_response(redirect(url_for('index.home')))
+        response.set_cookie('alert_message', urllib.parse.quote("Você já está logado!"))
+        return response
+
     if request.method == 'POST':
         login = request.form['login']
         password = request.form['password']
